@@ -67,8 +67,8 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         }
 
         public void setItem(Question item) {
-            question.setText(item.getQuestion());
-            category.setText(item.getCategory());
+            question.setText(item.getQtitle());
+            category.setText(item.getQcategory());
         }
     }
 
