@@ -1,40 +1,23 @@
 package com.example.dkuqa;
 
 public class Question {
-    public int Qno;
-    public String Qtitle;
-    public String Qcontent;
-    public String Qcategory;
+    String title;
+    String category;
 
-    public int getQno() {
-        return Qno;
+    public Question(String title, String category) {
+        this.title = title;
+        this.category = category;
+    }   // 질문 생성자
+
+    public String getTitle() {
+        return title;
     }
 
-    public String getQtitle() {
-        return Qtitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getQcontent() {
-        return Qcontent;
-    }
+    public String getCategory() { return category; }
 
-    public String getQcategory() {
-        return Qcategory;
-    }
-
-    public void setQno(int qno) {
-        Qno = qno;
-    }
-
-    public void setQtitle(String qtitle) {
-        Qtitle = qtitle;
-    }
-
-    public void setQcontent(String qcontent) {
-        Qcontent = qcontent;
-    }
-
-    public void setQcategory(String qcategory) {
-        Qcategory = qcategory;
-    }
+    public void setCategory(String category) { this.category = category; }
 }

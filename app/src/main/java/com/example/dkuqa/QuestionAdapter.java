@@ -56,19 +56,19 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             category = itemView.findViewById(R.id.category);
 
             itemView.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View view) {
-                   int position = getAdapterPosition();
-                   if (listener != null) {
-                       listener.onItemClick(ViewHolder.this, view, position);
-                   }
-               }
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    if (listener != null) {
+                        listener.onItemClick(ViewHolder.this, view, position);
+                    }
+                }
             });
         }
 
         public void setItem(Question item) {
-            question.setText(item.getQtitle());
-            category.setText(item.getQcategory());
+            question.setText(item.getTitle());
+            category.setText(item.getCategory());
         }
     }
 
