@@ -30,7 +30,7 @@
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="10dp"
                 android:text="제목"
                 android:textSize="30sp" />
 
@@ -38,7 +38,7 @@
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="7dp"
+                android:layout_margin="10dp"
                 android:layout_weight="0"
                 android:text="내용"
                 android:textSize="14sp" />
@@ -47,7 +47,7 @@
                 android:id="@+id/backButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="10dp"
                 android:layout_weight="0"
                 android:text="뒤로 가기" />
         </LinearLayout>
