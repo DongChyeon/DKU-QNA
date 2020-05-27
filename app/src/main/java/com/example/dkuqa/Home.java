@@ -1,6 +1,5 @@
 package com.example.dkuqa;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +15,9 @@ public class Home extends Fragment {
     MoreInfo moreInfo;  // 카드뷰
     static RecyclerView questionList;   // 리사이클러
     QuestionAdapter adapter;    // 리사이클러 뷰홀더
+    QuestionDatabaseManager QuestionDBManager;
+
+    String[] columns = new String[] { "Qtitle", "Qcategory" };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
@@ -27,6 +29,8 @@ public class Home extends Fragment {
     }
 
     private void InitUI(ViewGroup rootView) {
+        QuestionDBManager = QuestionDatabaseManager.getInstance(getActivity());
+
         moreInfo = rootView.findViewById(R.id.moreInfo);
         questionList = rootView.findViewById(R.id.questionList);
 
@@ -34,7 +38,7 @@ public class Home extends Fragment {
         questionList.setLayoutManager(layoutManager);
         adapter = new QuestionAdapter();
 
-        Cursor cursor = MainActivity.database.rawQuery("SELECT Qtitle, Qcategory FROM Question", null);
+        Cursor cursor = QuestionDBManager.query(columns, null, null, null, null,null);
         int recordCount = cursor.getCount();
 
         for (int i = 0; i < recordCount; i++) {
@@ -49,7 +53,7 @@ public class Home extends Fragment {
         adapter.setOnItemClickListener(new OnQuestionItemClickListener() {
             @Override
             public void onItemClick(QuestionAdapter.ViewHolder holder, View view, int position) {
-                Cursor cursor = MainActivity.database.rawQuery("SELECT Qtitle, Qcontent FROM Question", null);
+                Cursor cursor = QuestionDBManager.query(columns, null, null, null,  null, null);
                 cursor.moveToPosition(position);
                 String Qtitle = cursor.getString(0);
                 String Qcontent = cursor.getString(1);
