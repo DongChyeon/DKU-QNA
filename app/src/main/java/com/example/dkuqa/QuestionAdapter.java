@@ -87,4 +87,6 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     public Question setItem(int position, Question item) {
         return items.set(position, item);
     }
+
+    public void clearItems() { items.clear(); }
 }
