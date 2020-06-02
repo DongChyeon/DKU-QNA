@@ -10,9 +10,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    Home home;
-    Category category;
-    Search search;  // 프래그먼트들
+    HomeTab home;
+    CategoryTab category;
 
     BottomNavigationView bottomNavigationView;
 
@@ -21,9 +20,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        home = new Home();
-        category = new Category();
-        search = new Search();
+        home = new HomeTab();
+        category = new CategoryTab();
+        // 마지막 남은 한 탭 메뉴 고민해보기
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, home).commit();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -38,12 +37,9 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.category:
                                 getSupportFragmentManager().beginTransaction().replace(R.id.container, category).commit();
                                 return true;
-                            case R.id.search:
-                                getSupportFragmentManager().beginTransaction().replace(R.id.container, search).commit();
-                                return true;
                         }
                         return false;
                     }
-                });     // home, category와 search 기능 추가 예정
+                });     //
     }
 }

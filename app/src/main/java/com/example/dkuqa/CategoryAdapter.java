@@ -10,22 +10,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHolder> implements OnQuestionItemClickListener {
-    ArrayList<QuestionModel> items = new ArrayList<QuestionModel>();  // QuestionModel 아이템이 담긴 ArrayList
-    OnQuestionItemClickListener listener;
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> implements OnCategoryItemClickListener {
+    ArrayList<CategoryModel> items = new ArrayList<CategoryModel>();  // CategoryModel 아이템이 담긴 ArrayList
+    OnCategoryItemClickListener listener;
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        View itemView = inflater.inflate(R.layout.question_item, viewGroup, false);
+        View itemView = inflater.inflate(R.layout.category_item, viewGroup, false);
 
         return new ViewHolder(itemView, this);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        QuestionModel item = items.get(position);
+        CategoryModel item = items.get(position);
         viewHolder.setItem(item);
     }
 
@@ -34,7 +34,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         return items.size();
     }
 
-    public void setOnItemClickListener(OnQuestionItemClickListener listener) {
+    public void setOnCategoryClickListener(OnCategoryItemClickListener listener) {
         this.listener = listener;
     }
 
@@ -46,13 +46,11 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView question;
         TextView category;
 
-        public ViewHolder(View itemView, final OnQuestionItemClickListener listener) {
+        public ViewHolder(View itemView, final CategoryAdapter listener) {
             super(itemView);
 
-            question = itemView.findViewById(R.id.question);
             category = itemView.findViewById(R.id.category);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -66,25 +64,24 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             });
         }
 
-        public void setItem(QuestionModel item) {
-            question.setText(item.getTitle());
+        public void setItem(CategoryModel item) {
             category.setText(item.getCategory());
         }
     }
 
-    public void addItem(QuestionModel item) {
+    public void addItem(CategoryModel item) {
         items.add(item);
     }
 
-    public void setItems(ArrayList<QuestionModel> items) {
+    public void setItems(ArrayList<CategoryModel> items) {
         this.items = items;
     }
 
-    public QuestionModel getItem(int position) {
+    public CategoryModel getItem(int position) {
         return items.get(position);
     }
 
-    public QuestionModel setItem(int position, QuestionModel item) {
+    public CategoryModel setItem(int position, CategoryModel item) {
         return items.set(position, item);
     }
 

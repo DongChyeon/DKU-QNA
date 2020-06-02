@@ -78,21 +78,9 @@ public class QuestionDatabaseManager {
         }
     }   // DB파일 생성
 
-    public Cursor query(String[] columns,
-                        String selection,
-                        String[] selectionArgs,
-                        String groupBy,
-                        String having,
-    String orderby)
-    {
-        return database.query("Question",
-                columns,
-                selection,
-                selectionArgs,
-                groupBy,
-                having,
-                orderby);
-    }   // DB 조회
+    public Cursor rawQuery(String sql, String[] selectionArgs) {
+        return database.rawQuery(sql, selectionArgs);
+    }   // rawQuery 메소드
 
     private void println(String data) {
         Toast.makeText(myContext, data, Toast.LENGTH_LONG).show();

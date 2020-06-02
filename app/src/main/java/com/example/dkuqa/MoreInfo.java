@@ -39,7 +39,7 @@ public class MoreInfo extends LinearLayout {
             @Override
             public void onClick(View v) {
                 setVisibility(View.INVISIBLE);
-                Home.questionList.setVisibility(View.VISIBLE);     // 카드뷰와 리사이클뷰를 번갈아 보이게하고 안보이게 하며 작동
+                HomeTab.questionList.setVisibility(View.VISIBLE);     // 카드뷰와 리사이클뷰를 번갈아 보이게하고 안보이게 하며 작동
             }
         });
     }

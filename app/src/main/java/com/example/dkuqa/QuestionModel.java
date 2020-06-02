@@ -1,10 +1,10 @@
 package com.example.dkuqa;
 
-public class Question {
+public class QuestionModel {
     String title;
     String category;
 
-    public Question(String title, String category) {
+    public QuestionModel(String title, String category) {
         this.title = title;
         this.category = category;
     }   // 질문 생성자
