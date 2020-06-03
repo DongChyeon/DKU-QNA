@@ -1,5 +1,6 @@
 package com.example.dkuqa;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -50,6 +52,18 @@ public class CategoryTab extends Fragment {
         cursor.close();
         categoryList.setAdapter(adapter);   // 리싸이클러뷰 적용
 
+        adapter.setOnItemClickListener(new OnCategoryItemClickListener() {
+            @Override
+            public void onItemClick(CategoryAdapter.ViewHolder holder, View view, int position) {
+                Intent intent = new Intent(getActivity(), PostListActivity.class);
+                Cursor cursor = QuestionDBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question", null);
+                cursor.moveToPosition(position);
+                String Qcategory = cursor.getString(0);
+                intent.putExtra("category", Qcategory);
+                startActivity(intent);
+            }
+        }); // 리사이클러뷰에 클릭리스너 추가 (카드뷰로 구현한 자세히 보기 화면 나옴)
+
         searchButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -63,6 +77,18 @@ public class CategoryTab extends Fragment {
                 }
                 cursor.close();
                 categoryList.setAdapter(adapter);   // 리싸이클러뷰 적용
+
+                adapter.setOnItemClickListener(new OnCategoryItemClickListener() {
+                    @Override
+                    public void onItemClick(CategoryAdapter.ViewHolder holder, View view, int position) {
+                        Intent intent = new Intent(getActivity(), PostListActivity.class);
+                        Cursor cursor = QuestionDBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question", null);
+                        cursor.moveToPosition(position);
+                        String Qcategory = cursor.getString(0);
+                        intent.putExtra("category", Qcategory);
+                        startActivity(intent);
+                    }
+                }); // 리사이클러뷰에 클릭리스너 추가 (카드뷰로 구현한 자세히 보기 화면 나옴)
             }
         }); // 카테고리명 기반 검색 기능
     }

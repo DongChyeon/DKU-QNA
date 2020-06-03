@@ -1,5 +1,6 @@
 package com.example.dkuqa;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,8 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class HomeTab extends Fragment {
-    MoreInfo moreInfo;  // 카드뷰
-    static RecyclerView questionList;   // 리사이클러
+    RecyclerView questionList;   // 리사이클러
     QuestionAdapter adapter;    // 리사이클러 뷰홀더
     QuestionDatabaseManager QuestionDBManager;
 
@@ -33,7 +33,6 @@ public class HomeTab extends Fragment {
     private void InitUI(ViewGroup rootView) {
         QuestionDBManager = QuestionDatabaseManager.getInstance(getActivity());
 
-        moreInfo = rootView.findViewById(R.id.moreInfo);
         questionList = rootView.findViewById(R.id.questionList);
         searchWord = rootView.findViewById(R.id.searchWord);
         searchButton = rootView.findViewById(R.id.searchButton);
@@ -57,17 +56,16 @@ public class HomeTab extends Fragment {
         adapter.setOnItemClickListener(new OnQuestionItemClickListener() {
             @Override
             public void onItemClick(QuestionAdapter.ViewHolder holder, View view, int position) {
-                Cursor cursor = QuestionDBManager.rawQuery("SELECT Qtitle, Qcategory FROM Question", null);
+                Intent intent = new Intent(getActivity(), ViewPostActivity.class);
+                Cursor cursor = QuestionDBManager.rawQuery("SELECT Qtitle, Qcontent FROM Question", null);
                 cursor.moveToPosition(position);
                 String Qtitle = cursor.getString(0);
                 String Qcontent = cursor.getString(1);
-                moreInfo.setImage(R.drawable.applogo);
-                moreInfo.setTitle(Qtitle);
-                moreInfo.setContent(Qcontent);
-                moreInfo.setVisibility(View.VISIBLE);
-                questionList.setVisibility(View.INVISIBLE);
-        }
-    }); // 리사이클러뷰에 클릭리스너 추가 (카드뷰로 구현한 자세히 보기 화면 나옴)
+                intent.putExtra("title", Qtitle);
+                intent.putExtra("content", Qcontent);
+                startActivity(intent);
+            }
+        }); // 리사이클러뷰에 클릭리스너 추가 (카드뷰로 구현한 자세히 보기 화면 나옴)
 
         searchButton.setOnClickListener(new View.OnClickListener(){
         @Override
@@ -87,15 +85,14 @@ public class HomeTab extends Fragment {
             adapter.setOnItemClickListener(new OnQuestionItemClickListener() {
                 @Override
                 public void onItemClick(QuestionAdapter.ViewHolder holder, View view, int position) {
+                    Intent intent = new Intent(getActivity(), ViewPostActivity.class);
                     Cursor cursor = QuestionDBManager.rawQuery("SELECT Qtitle, Qcategory FROM Question", null);
                     cursor.moveToPosition(position);
                     String Qtitle = cursor.getString(0);
                     String Qcontent = cursor.getString(1);
-                    moreInfo.setImage(R.drawable.applogo);
-                    moreInfo.setTitle(Qtitle);
-                    moreInfo.setContent(Qcontent);
-                    moreInfo.setVisibility(View.VISIBLE);
-                    questionList.setVisibility(View.INVISIBLE);
+                    intent.putExtra("title", Qtitle);
+                    intent.putExtra("content", Qcontent);
+                    startActivity(intent);
                 }
             }); // 리사이클러뷰에 클릭리스너 추가 (카드뷰로 구현한 자세히 보기 화면 나옴)
         }

@@ -34,7 +34,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         return items.size();
     }
 
-    public void setOnCategoryClickListener(OnCategoryItemClickListener listener) {
+    public void setOnItemClickListener(OnCategoryItemClickListener listener) {
         this.listener = listener;
     }
 
