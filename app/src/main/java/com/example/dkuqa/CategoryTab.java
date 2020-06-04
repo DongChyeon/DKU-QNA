@@ -82,7 +82,7 @@ public class CategoryTab extends Fragment {
                     @Override
                     public void onItemClick(CategoryAdapter.ViewHolder holder, View view, int position) {
                         Intent intent = new Intent(getActivity(), PostListActivity.class);
-                        Cursor cursor = QuestionDBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question", null);
+                        Cursor cursor = QuestionDBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question WHERE Qcategory LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
                         cursor.moveToPosition(position);
                         String Qcategory = cursor.getString(0);
                         intent.putExtra("category", Qcategory);

@@ -86,7 +86,7 @@ public class HomeTab extends Fragment {
                 @Override
                 public void onItemClick(QuestionAdapter.ViewHolder holder, View view, int position) {
                     Intent intent = new Intent(getActivity(), ViewPostActivity.class);
-                    Cursor cursor = QuestionDBManager.rawQuery("SELECT Qtitle, Qcategory FROM Question", null);
+                    Cursor cursor = QuestionDBManager.rawQuery("SELECT Qtitle, Qcategory FROM Question WHERE Qtitle LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
                     cursor.moveToPosition(position);
                     String Qtitle = cursor.getString(0);
                     String Qcontent = cursor.getString(1);
