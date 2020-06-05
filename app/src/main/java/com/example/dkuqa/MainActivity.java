@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity {
 
     HomeTab home;
     CategoryTab category;
+    SiteTab sites;
 
     BottomNavigationView bottomNavigationView;
 
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
         home = new HomeTab();
         category = new CategoryTab();
-        // 마지막 남은 한 탭 메뉴 고민해보기
+        sites = new SiteTab();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, home).commit();
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -37,9 +38,12 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.category:
                                 getSupportFragmentManager().beginTransaction().replace(R.id.container, category).commit();
                                 return true;
+                            case R.id.sites:
+                                getSupportFragmentManager().beginTransaction().replace(R.id.container, sites).commit();
+                                return true;
                         }
                         return false;
                     }
-                });     //
+                });     // 프래그먼트 전환
     }
 }
