@@ -51,7 +51,6 @@ public class SiteAdapter extends RecyclerView.Adapter<SiteAdapter.ViewHolder> im
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         TextView content;
-        Button linkButton;
 
         public ViewHolder(View itemView, final SiteAdapter listener) {
             super(itemView);

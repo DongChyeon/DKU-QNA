@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class CategoryTab extends Fragment {
     RecyclerView categoryList;   // 리사이클러
     CategoryAdapter adapter;    // 리사이클러 뷰홀더
-    QuestionDatabaseManager QuestionDBManager;
+    DatabaseManager DBManager;
 
     EditText searchWord;
     Button searchButton;
@@ -31,7 +31,7 @@ public class CategoryTab extends Fragment {
         return rootView;
     }
     private void initUI(ViewGroup rootView) {
-        QuestionDBManager = QuestionDatabaseManager.getInstance(getActivity());
+        DBManager = DatabaseManager.getInstance(getActivity());
 
         categoryList = rootView.findViewById(R.id.categoryList);
         searchWord = rootView.findViewById(R.id.searchWord);
@@ -41,7 +41,7 @@ public class CategoryTab extends Fragment {
         categoryList.setLayoutManager(layoutManager);
         adapter = new CategoryAdapter();
 
-        Cursor cursor = QuestionDBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question", null);
+        Cursor cursor = DBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question", null);
         int recordCount = cursor.getCount();
 
         for (int i = 0; i < recordCount; i++) {
@@ -56,7 +56,7 @@ public class CategoryTab extends Fragment {
             @Override
             public void onItemClick(CategoryAdapter.ViewHolder holder, View view, int position) {
                 Intent intent = new Intent(getActivity(), PostListActivity.class);
-                Cursor cursor = QuestionDBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question", null);
+                Cursor cursor = DBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question", null);
                 cursor.moveToPosition(position);
                 String Qcategory = cursor.getString(0);
                 intent.putExtra("category", Qcategory);
@@ -67,7 +67,7 @@ public class CategoryTab extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Cursor cursor = QuestionDBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question WHERE Qcategory LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
+                Cursor cursor = DBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question WHERE Qcategory LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
                 int recordCount = cursor.getCount();
                 adapter.clearItems();   // 먼저 adapter의 아이템들을 비워줘야 함
                 for (int i = 0; i < recordCount; i++) {
@@ -82,13 +82,13 @@ public class CategoryTab extends Fragment {
                     @Override
                     public void onItemClick(CategoryAdapter.ViewHolder holder, View view, int position) {
                         Intent intent = new Intent(getActivity(), PostListActivity.class);
-                        Cursor cursor = QuestionDBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question WHERE Qcategory LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
+                        Cursor cursor = DBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question WHERE Qcategory LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
                         cursor.moveToPosition(position);
                         String Qcategory = cursor.getString(0);
                         intent.putExtra("category", Qcategory);
                         startActivity(intent);
                     }
-                }); // 리사이클러뷰에 클릭리스너 추가 (카드뷰로 구현한 자세히 보기 화면 나옴)
+                }); // 리사이클러뷰에 클릭리스너 추가
             }
         }); // 카테고리명 기반 검색 기능
     }

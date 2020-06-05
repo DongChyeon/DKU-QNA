@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class QuestionDatabaseManager {
+public class DatabaseManager {
     private static final String DB_PATH = "/data/data/com.example.dkuqa/databases/";
     private static final String DB_NAME = "dku_QA.db";
 
@@ -19,17 +19,17 @@ public class QuestionDatabaseManager {
 
     Context myContext = null;
 
-    private static QuestionDatabaseManager QuestionDBManager = null;
+    private static DatabaseManager DBManager = null;
     private SQLiteDatabase database = null;
 
-    public static synchronized QuestionDatabaseManager getInstance(Context context) {
-        if (QuestionDBManager == null) {
-            QuestionDBManager = new QuestionDatabaseManager(context);
+    public static synchronized DatabaseManager getInstance(Context context) {
+        if (DBManager == null) {
+            DBManager = new DatabaseManager(context);
         }
-        return QuestionDBManager;
+        return DBManager;
     }
 
-    private QuestionDatabaseManager(Context context) {
+    private DatabaseManager(Context context) {
         myContext = context;
 
         try {

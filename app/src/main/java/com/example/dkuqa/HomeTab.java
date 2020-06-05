@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class HomeTab extends Fragment {
     RecyclerView questionList;   // 리사이클러
     QuestionAdapter adapter;    // 리사이클러 뷰홀더
-    QuestionDatabaseManager QuestionDBManager;
+    DatabaseManager DBManager;
 
     EditText searchWord;
     Button searchButton;
@@ -31,7 +31,7 @@ public class HomeTab extends Fragment {
     }
 
     private void InitUI(ViewGroup rootView) {
-        QuestionDBManager = QuestionDatabaseManager.getInstance(getActivity());
+        DBManager = DatabaseManager.getInstance(getActivity());
 
         questionList = rootView.findViewById(R.id.questionList);
         searchWord = rootView.findViewById(R.id.searchWord);
@@ -41,7 +41,7 @@ public class HomeTab extends Fragment {
         questionList.setLayoutManager(layoutManager);
         adapter = new QuestionAdapter();
 
-        Cursor cursor = QuestionDBManager.rawQuery("SELECT Qtitle, Qcategory FROM Question", null);
+        Cursor cursor = DBManager.rawQuery("SELECT Qtitle, Qcategory FROM Question", null);
         int recordCount = cursor.getCount();
 
         for (int i = 0; i < recordCount; i++) {
@@ -57,7 +57,7 @@ public class HomeTab extends Fragment {
             @Override
             public void onItemClick(QuestionAdapter.ViewHolder holder, View view, int position) {
                 Intent intent = new Intent(getActivity(), ViewPostActivity.class);
-                Cursor cursor = QuestionDBManager.rawQuery("SELECT Qtitle, Qcontent FROM Question", null);
+                Cursor cursor = DBManager.rawQuery("SELECT Qtitle, Qcontent FROM Question", null);
                 cursor.moveToPosition(position);
                 String Qtitle = cursor.getString(0);
                 String Qcontent = cursor.getString(1);
@@ -70,7 +70,7 @@ public class HomeTab extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-            Cursor cursor = QuestionDBManager.rawQuery("SELECT Qtitle, Qcategory FROM Question WHERE Qtitle LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
+            Cursor cursor = DBManager.rawQuery("SELECT Qtitle, Qcategory FROM Question WHERE Qtitle LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
             int recordCount = cursor.getCount();
             adapter.clearItems();   // 먼저 adapter의 아이템들을 비워줘야 함
             for (int i = 0; i < recordCount; i++) {
@@ -86,7 +86,7 @@ public class HomeTab extends Fragment {
                 @Override
                 public void onItemClick(QuestionAdapter.ViewHolder holder, View view, int position) {
                     Intent intent = new Intent(getActivity(), ViewPostActivity.class);
-                    Cursor cursor = QuestionDBManager.rawQuery("SELECT Qtitle, Qcategory FROM Question WHERE Qtitle LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
+                    Cursor cursor = DBManager.rawQuery("SELECT Qtitle, Qcategory FROM Question WHERE Qtitle LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
                     cursor.moveToPosition(position);
                     String Qtitle = cursor.getString(0);
                     String Qcontent = cursor.getString(1);
@@ -94,7 +94,7 @@ public class HomeTab extends Fragment {
                     intent.putExtra("content", Qcontent);
                     startActivity(intent);
                 }
-            }); // 리사이클러뷰에 클릭리스너 추가 (카드뷰로 구현한 자세히 보기 화면 나옴)
+            }); // 리사이클러뷰에 클릭리스너 추가
         }
         });
     }
