@@ -1,4 +1,4 @@
-package com.example.dkuqa;
+package com.danlearning.dkuqna;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -86,7 +86,7 @@ public class HomeTab extends Fragment {
                 @Override
                 public void onItemClick(QuestionAdapter.ViewHolder holder, View view, int position) {
                     Intent intent = new Intent(getActivity(), ViewPostActivity.class);
-                    Cursor cursor = DBManager.rawQuery("SELECT Qtitle, Qcategory FROM Question WHERE Qtitle LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
+                    Cursor cursor = DBManager.rawQuery("SELECT Qtitle, Qcontent FROM Question WHERE Qtitle LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
                     cursor.moveToPosition(position);
                     String Qtitle = cursor.getString(0);
                     String Qcontent = cursor.getString(1);

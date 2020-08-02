@@ -1,4 +1,4 @@
-package com.example.dkuqa;
+package com.danlearning.dkuqna;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,22 +10,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> implements OnCategoryItemClickListener {
-    ArrayList<CategoryModel> items = new ArrayList<CategoryModel>();  // CategoryModel 아이템이 담긴 ArrayList
-    OnCategoryItemClickListener listener;
+public class SiteAdapter extends RecyclerView.Adapter<SiteAdapter.ViewHolder> implements OnSiteItemClickListener {
+    ArrayList<SiteModel> items = new ArrayList<SiteModel>();  // SiteModel 아이템이 담긴 ArrayList
+    OnSiteItemClickListener listener;
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        View itemView = inflater.inflate(R.layout.category_item, viewGroup, false);
+        View itemView = inflater.inflate(R.layout.site_item, viewGroup, false);
 
         return new ViewHolder(itemView, this);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        CategoryModel item = items.get(position);
+        SiteModel item = items.get(position);
         viewHolder.setItem(item);
     }
 
@@ -34,7 +34,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         return items.size();
     }
 
-    public void setOnItemClickListener(OnCategoryItemClickListener listener) {
+    public void setOnItemClickListener(OnSiteItemClickListener listener) {
         this.listener = listener;
     }
 
@@ -46,12 +46,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView category;
+        TextView title;
+        TextView content;
 
-        public ViewHolder(View itemView, final CategoryAdapter listener) {
+        public ViewHolder(View itemView, final SiteAdapter listener) {
             super(itemView);
 
-            category = itemView.findViewById(R.id.category);
+            title = itemView.findViewById(R.id.title);
+            content = itemView.findViewById(R.id.content);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -64,24 +66,25 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             });
         }
 
-        public void setItem(CategoryModel item) {
-            category.setText(item.getCategory());
+        public void setItem(SiteModel item) {
+            title.setText(item.getTitle());
+            content.setText(item.getContent());
         }
     }
 
-    public void addItem(CategoryModel item) {
+    public void addItem(SiteModel item) {
         items.add(item);
     }
 
-    public void setItems(ArrayList<CategoryModel> items) {
+    public void setItems(ArrayList<SiteModel> items) {
         this.items = items;
     }
 
-    public CategoryModel getItem(int position) {
+    public SiteModel getItem(int position) {
         return items.get(position);
     }
 
-    public CategoryModel setItem(int position, CategoryModel item) {
+    public SiteModel setItem(int position, SiteModel item) {
         return items.set(position, item);
     }
 

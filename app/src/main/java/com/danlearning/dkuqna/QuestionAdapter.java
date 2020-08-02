@@ -1,4 +1,4 @@
-package com.example.dkuqa;
+package com.danlearning.dkuqna;
 
 import android.view.LayoutInflater;
 import android.view.View;

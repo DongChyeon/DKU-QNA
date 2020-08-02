@@ -1,4 +1,4 @@
-package com.example.dkuqa;
+package com.danlearning.dkuqna;
 
 import androidx.appcompat.app.AppCompatActivity;
 

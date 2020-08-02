@@ -14,7 +14,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:orientation="horizontal">
 
             <EditText
@@ -23,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="검색어를 입력하세요."
+                android:hint="글 제목을 입력하세요."
                 android:inputType="textPersonName" />
 
             <Button

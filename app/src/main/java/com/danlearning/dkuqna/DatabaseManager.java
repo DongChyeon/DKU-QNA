@@ -1,4 +1,4 @@
-package com.example.dkuqa;
+package com.danlearning.dkuqna;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class DatabaseManager {
-    private static final String DB_PATH = "/data/data/com.example.dkuqa/databases/";
+    private static final String DB_PATH = "/data/data/com.danlearning.dkuqna/databases/";
     private static final String DB_NAME = "dku_QA.db";
 
     private String myPath = DB_PATH + DB_NAME;
