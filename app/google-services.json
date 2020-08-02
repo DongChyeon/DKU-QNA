@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "105987903700",
+    "firebase_url": "https://dku-qna.firebaseio.com",
+    "project_id": "dku-qna",
+    "storage_bucket": "dku-qna.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:105987903700:android:170ad6b1cbe08c5ed46b41",
+        "android_client_info": {
+          "package_name": "com.danlearning.dkuqna"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "105987903700-gm9rqih4hkhvfsbmts2is0u2gtc04klp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.danlearning.dkuqna",
+            "certificate_hash": "eaecbc633bd66a58c50ba810b886c8f91e32f871"
+          }
+        },
+        {
+          "client_id": "105987903700-j21sfnmjp2qaqvauna8ipkldkjcpqlmi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVhc5-jYerqIzdVFwv0kUvAT6EjyenQkM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "105987903700-j21sfnmjp2qaqvauna8ipkldkjcpqlmi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
