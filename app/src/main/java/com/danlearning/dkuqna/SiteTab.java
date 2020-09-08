@@ -1,21 +1,30 @@
 package com.danlearning.dkuqna;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.danlearning.dkuqna.model.SiteModel;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 public class SiteTab extends Fragment {
     RecyclerView siteList;   // 리사이클러
     SiteAdapter adapter;    // 리사이클러 뷰홀더
-    DatabaseManager DBManager;
+
+    FirebaseFirestore firestore;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
@@ -27,7 +36,7 @@ public class SiteTab extends Fragment {
     }
 
     private void InitUI(ViewGroup rootView) {
-        DBManager = DatabaseManager.getInstance(getActivity());
+        firestore = FirebaseFirestore.getInstance();
 
         siteList = rootView.findViewById(R.id.siteList);
 
@@ -35,25 +44,30 @@ public class SiteTab extends Fragment {
         siteList.setLayoutManager(layoutManager);
         adapter = new SiteAdapter();
 
-        Cursor cursor = DBManager.rawQuery("SELECT Stitle, Scontent FROM Site", null);
-        int recordCount = cursor.getCount();
+        firestore.collection("sites").orderBy("title").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
+                }   // 에러가 발생하면 종료
 
-        for (int i = 0; i < recordCount; i++) {
-            cursor.moveToNext();
-            String Stitle = cursor.getString(0);
-            String Scontent = cursor.getString(1);
-            adapter.addItem(new SiteModel(Stitle, Scontent));   // 리싸이클러뷰에 site 아이템 넣기
-        }
-        cursor.close();
-        siteList.setAdapter(adapter);   // 리싸이클러뷰 적용
+                adapter.clearItems();
+
+                for (QueryDocumentSnapshot doc : snapshot) {
+                    adapter.addItem(new SiteModel(doc.getString("title"), doc.getString("content"), doc.getString("link")));
+                }
+                adapter.notifyDataSetChanged();
+                siteList.setAdapter(adapter);
+            }
+        }); // 파이어스토어 sites 컬렉션에서 데이터를 불러와 리사이클러뷰에 적용
 
         adapter.setOnItemClickListener(new OnSiteItemClickListener() {
             @Override
             public void onItemClick(SiteAdapter.ViewHolder holder, View view, int position) {
-                Cursor cursor = DBManager.rawQuery("SELECT Slink FROM Site" , null);
-                cursor.moveToPosition(position);
-                String Slink = cursor.getString(0);
-                Uri uri = Uri.parse(Slink);
+                String siteLink = adapter.getItem(position).getLink();
+                Uri uri = Uri.parse(siteLink);
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }
