@@ -8,15 +8,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.danlearning.dkuqna.model.CategoryModel;
+import com.danlearning.dkuqna.model.SiteModel;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashSet;
+import java.util.Iterator;
+
 public class CategoryTab extends Fragment {
     RecyclerView categoryList;   // 리사이클러
     CategoryAdapter adapter;    // 리사이클러 뷰홀더
-    DatabaseManager DBManager;
+
+    FirebaseFirestore firestore;
+
+    HashSet<String> categories; // select distinct 대체
 
     EditText searchWord;
     Button searchButton;
@@ -30,7 +46,8 @@ public class CategoryTab extends Fragment {
         return rootView;
     }
     private void initUI(ViewGroup rootView) {
-        DBManager = DatabaseManager.getInstance(getActivity());
+        firestore = FirebaseFirestore.getInstance();
+        categories = new HashSet();
 
         categoryList = rootView.findViewById(R.id.categoryList);
         searchWord = rootView.findViewById(R.id.searchWord);
@@ -40,25 +57,36 @@ public class CategoryTab extends Fragment {
         categoryList.setLayoutManager(layoutManager);
         adapter = new CategoryAdapter();
 
-        Cursor cursor = DBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question", null);
-        int recordCount = cursor.getCount();
+        firestore.collection("questions").orderBy("category").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
+                }   // 에러가 발생하면 종료
 
-        for (int i = 0; i < recordCount; i++) {
-            cursor.moveToNext();
-            String Qcategory = cursor.getString(0);
-            adapter.addItem(new CategoryModel(Qcategory));   // 리싸이클러뷰에 question 아이템 넣기
-        }
-        cursor.close();
-        categoryList.setAdapter(adapter);   // 리싸이클러뷰 적용
+                categories.clear();
+                adapter.clearItems();
+
+                for (QueryDocumentSnapshot doc : snapshot) {
+                    categories.add(doc.getString("category"));
+                }
+
+                for (String category : categories) {
+                    adapter.addItem(new CategoryModel(category));
+                }
+                adapter.notifyDataSetChanged();
+                categoryList.setAdapter(adapter);
+            }
+        }); // 파이어스토어 sites 컬렉션에서 데이터를 불러와 리사이클러뷰에 적용
 
         adapter.setOnItemClickListener(new OnCategoryItemClickListener() {
             @Override
             public void onItemClick(CategoryAdapter.ViewHolder holder, View view, int position) {
                 Intent intent = new Intent(getActivity(), PostListActivity.class);
-                Cursor cursor = DBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question", null);
-                cursor.moveToPosition(position);
-                String Qcategory = cursor.getString(0);
-                intent.putExtra("category", Qcategory);
+
+                intent.putExtra("category", adapter.getItem(position).getCategory());
                 startActivity(intent);
             }
         }); // 리사이클러뷰에 클릭리스너 추가 (카드뷰로 구현한 자세히 보기 화면 나옴)
@@ -66,25 +94,38 @@ public class CategoryTab extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Cursor cursor = DBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question WHERE Qcategory LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
-                int recordCount = cursor.getCount();
-                adapter.clearItems();   // 먼저 adapter의 아이템들을 비워줘야 함
-                for (int i = 0; i < recordCount; i++) {
-                    cursor.moveToNext();
-                    String Qcategory = cursor.getString(0);
-                    adapter.addItem(new CategoryModel(Qcategory));   // 리싸이클러뷰에 question 아이템 넣기
-                }
-                cursor.close();
-                categoryList.setAdapter(adapter);   // 리싸이클러뷰 적용
+                firestore.collection("questions").orderBy("category").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            return;
+                        }   // 에러가 발생하면 종료
+
+                        categories.clear();
+                        adapter.clearItems();
+
+                        for (QueryDocumentSnapshot doc : snapshot) {
+                            if (doc.getString("category").contains(searchWord.toString())) {
+                                categories.add(doc.getString("category"));
+                            }
+                        }
+
+                        for (String category : categories) {
+                            adapter.addItem(new CategoryModel(category));
+                        }
+                        adapter.notifyDataSetChanged();
+                        categoryList.setAdapter(adapter);
+                    }
+                }); // 파이어스토어 sites 컬렉션에서 데이터를 불러와 리사이클러뷰에 적용
 
                 adapter.setOnItemClickListener(new OnCategoryItemClickListener() {
                     @Override
                     public void onItemClick(CategoryAdapter.ViewHolder holder, View view, int position) {
                         Intent intent = new Intent(getActivity(), PostListActivity.class);
-                        Cursor cursor = DBManager.rawQuery("SELECT DISTINCT Qcategory FROM Question WHERE Qcategory LIKE " + "'%" + searchWord.getText().toString() + "%'" , null);
-                        cursor.moveToPosition(position);
-                        String Qcategory = cursor.getString(0);
-                        intent.putExtra("category", Qcategory);
+
+                        intent.putExtra("category", adapter.getItem(position).getCategory());
                         startActivity(intent);
                     }
                 }); // 리사이클러뷰에 클릭리스너 추가

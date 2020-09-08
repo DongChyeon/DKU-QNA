@@ -1,5 +1,6 @@
 package com.danlearning.dkuqna;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,12 +11,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.danlearning.dkuqna.model.QuestionModel;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class PostListActivity extends AppCompatActivity {
 
     RecyclerView questionList;   // 리사이클러
     QuestionAdapter adapter;    // 리사이클러 뷰홀더
-    DatabaseManager DBManager;
+    FirebaseFirestore firestore;
 
     EditText searchWord;
     Button searchButton;
@@ -28,9 +37,9 @@ public class PostListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post_list);
 
         Intent intent = getIntent();
-        category = intent.getStringExtra("category");
+        category = intent.getStringExtra("category");   // 인텐트에서 category 값을 받아옴
 
-        DBManager = DatabaseManager.getInstance(this);
+        firestore = FirebaseFirestore.getInstance();
 
         questionList = findViewById(R.id.questionList);
         searchWord = findViewById(R.id.searchWord);
@@ -40,28 +49,32 @@ public class PostListActivity extends AppCompatActivity {
         questionList.setLayoutManager(layoutManager);
         adapter = new QuestionAdapter();
 
-        Cursor cursor = DBManager.rawQuery("SELECT Qtitle, Qcategory FROM Question WHERE Qcategory = " + "'"  + category + "'", null);
-        int recordCount = cursor.getCount();
+        firestore.collection("questions").whereEqualTo("category", category).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
+                }   // 에러가 발생하면 종료
 
-        for (int i = 0; i < recordCount; i++) {
-            cursor.moveToNext();
-            String Qtitle = cursor.getString(0);
-            String Qcategory = cursor.getString(1);
-            adapter.addItem(new QuestionModel(Qtitle, Qcategory));   // 리싸이클러뷰에 question 아이템 넣기
-        }
-        cursor.close();
-        questionList.setAdapter(adapter);   // 리싸이클러뷰 적용
+                adapter.clearItems();
+
+                for (QueryDocumentSnapshot doc : snapshot) {
+                    adapter.addItem(new QuestionModel(doc.getString("title"), doc.getString("category"), doc.getString("content")));
+                }
+                adapter.notifyDataSetChanged();
+                questionList.setAdapter(adapter);
+            }
+        }); // 파이어스토어 questions 컬렉션에서 데이터를 불러와 리사이클러뷰에 적용
 
         adapter.setOnItemClickListener(new OnQuestionItemClickListener() {
             @Override
             public void onItemClick(QuestionAdapter.ViewHolder holder, View view, int position) {
                 Intent intent = new Intent(getApplicationContext(), ViewPostActivity.class);
-                Cursor cursor = DBManager.rawQuery("SELECT Qtitle, Qcontent FROM Question WHERE Qcategory = " + "'"  + category + "'", null);
-                cursor.moveToPosition(position);
-                String Qtitle = cursor.getString(0);
-                String Qcontent = cursor.getString(1);
-                intent.putExtra("title", Qtitle);
-                intent.putExtra("content", Qcontent);
+
+                intent.putExtra("title", adapter.getItem(position).getTitle());
+                intent.putExtra("content", adapter.getItem(position).getContent());
                 startActivity(intent);
             }
         }); // 리사이클러뷰에 클릭리스너 추가 (카드뷰로 구현한 자세히 보기 화면 나옴)
@@ -69,30 +82,34 @@ public class PostListActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Cursor cursor = DBManager.rawQuery("SELECT Qtitle, Qcategory FROM Question WHERE Qtitle LIKE " + "'%" + searchWord.getText().toString() + "%'"
-                        + " AND Qcategory = " + "'" + category + "'" , null);
-                int recordCount = cursor.getCount();
-                adapter.clearItems();   // 먼저 adapter의 아이템들을 비워줘야 함
-                for (int i = 0; i < recordCount; i++) {
-                    cursor.moveToNext();
-                    String Qtitle = cursor.getString(0);
-                    String Qcategory = cursor.getString(1);
-                    adapter.addItem(new QuestionModel(Qtitle, Qcategory));   // 리싸이클러뷰에 question 아이템 넣기
-                }
-                cursor.close();
-                questionList.setAdapter(adapter);   // 제목 기반 검색 기능
+                firestore.collection("questions").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            return;
+                        }   // 에러가 발생하면 종료
+
+                        adapter.clearItems();
+
+                        for (QueryDocumentSnapshot doc : snapshot) {
+                            if (doc.getString("title").contains(searchWord.getText().toString())) { // 타이틀에 정해진 키워드가 있는지 판단
+                                adapter.addItem(new QuestionModel(doc.getString("title"), doc.getString("category"), doc.getString("content")));
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                        questionList.setAdapter(adapter);
+                    }
+                }); // 파이어스토어 questions 컬렉션에서 데이터를 불러와 리사이클러뷰에 적용
 
                 adapter.setOnItemClickListener(new OnQuestionItemClickListener() {
                     @Override
                     public void onItemClick(QuestionAdapter.ViewHolder holder, View view, int position) {
                         Intent intent = new Intent(getApplicationContext(), ViewPostActivity.class);
-                        Cursor cursor = DBManager.rawQuery("SELECT Qtitle, Qcontent FROM Question WHERE Qtitle LIKE " + "'%" + searchWord.getText().toString() + "%'"
-                                + " AND Qcategory = " + "'" + category + "'" , null);
-                        cursor.moveToPosition(position);
-                        String Qtitle = cursor.getString(0);
-                        String Qcontent = cursor.getString(1);
-                        intent.putExtra("title", Qtitle);
-                        intent.putExtra("content", Qcontent);
+
+                        intent.putExtra("title", adapter.getItem(position).getTitle());
+                        intent.putExtra("content", adapter.getItem(position).getContent());
                         startActivity(intent);
                     }
                 }); // 리사이클러뷰에 클릭리스너 추가 (카드뷰로 구현한 자세히 보기 화면 나옴)

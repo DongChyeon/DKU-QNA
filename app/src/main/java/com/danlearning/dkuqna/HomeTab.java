@@ -1,9 +1,7 @@
 package com.danlearning.dkuqna;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.danlearning.dkuqna.model.QuestionModel;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -27,10 +25,10 @@ public class HomeTab extends Fragment {
     RecyclerView questionList;   // 리사이클러
     QuestionAdapter adapter;    // 리사이클러 뷰홀더
 
+    FirebaseFirestore firestore;
+
     EditText searchWord;
     Button searchButton;
-
-    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
@@ -42,6 +40,8 @@ public class HomeTab extends Fragment {
     }
 
     private void InitUI(ViewGroup rootView) {
+        firestore = FirebaseFirestore.getInstance();
+
         questionList = rootView.findViewById(R.id.questionList);
         searchWord = rootView.findViewById(R.id.searchWord);
         searchButton = rootView.findViewById(R.id.searchButton);

@@ -1,4 +1,4 @@
-package com.danlearning.dkuqna;
+package com.danlearning.dkuqna.model;
 
 public class CategoryModel {
     String category;
